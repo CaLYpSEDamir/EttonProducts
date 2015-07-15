@@ -39,10 +39,11 @@ products = {}
 for lett in main_list:
     if lett in rools:
         products[lett] = type(lett, (Product, ),
-                              {'relations': rools[lett], 'price': main_list[lett]})
+                              {'relations': rools[lett],
+                               'price': main_list[lett] or Product.price})
     else:
         products[lett] = type(lett, (Product, ),
-                                  {'price': main_list[lett]} if main_list[lett] else {})
+                              {'price': main_list[lett] or Product.price})
 
 
 class ProductManager(object):
@@ -119,13 +120,15 @@ class ProductManager(object):
             total = counter_total
         # 5-7 скидки
         else:
-            print 'Maybe discounts 5-7 are applied'
             total = counter_total
             if chosen_len == 3:
+                print 'Discounts 5 is applied'
                 total *= 0.95
             elif chosen_len == 4:
+                print 'Discounts 6 is applied'
                 total *= 0.9
             elif chosen_len == 5:
+                print 'Discounts 7 is applied'
                 total *= 0.85
 
         return total
