@@ -44,26 +44,18 @@ def coord_processing(pol_id, icoords):
         cut_x2, prec_x2 = float(x2[:cut_ind_x2]), x2[cut_ind_x2:]
 
         if cut_x1 < cut_x2:
-            li = [
-                cut_x1, prec_x1, cut_y1, prec_y1,
-                cut_x2, prec_x2, cut_y2, prec_y2,
-            ]
+            # li = [
+            #     cut_x1, prec_x1, cut_y1, prec_y1,
+            #     cut_x2, prec_x2, cut_y2, prec_y2,
+            # ]
+            li = [x1, y1, x2, y2, ]
         elif cut_x2 < cut_x1:
-            li = [
-                cut_x2, prec_x2, cut_y2, prec_y2,
-                cut_x1, prec_x1, cut_y1, prec_y1,
-            ]
+            li = [x2, y2, x1, y1, ]
         else:
             if prec_x1 < prec_x2:
-                li = [
-                    cut_x1, prec_x1, cut_y1, prec_y1,
-                    cut_x2, prec_x2, cut_y2, prec_y2,
-                ]
+                li = [x1, y1, x2, y2, ]
             elif prec_x2 < prec_x1:
-                li = [
-                    cut_x2, prec_x2, cut_y2, prec_y2,
-                    cut_x1, prec_x1, cut_y1, prec_y1,
-                ]
+                li = [x2, y2, x1, y1, ]
             else:
                 print 'Warning, pol_id={0} has vertical line, what to do???'.format(pol_id)
                 print 'x1: ', x1, 'y1: ', y1, 'x2: ', x2, 'y2: ', y2
@@ -97,14 +89,10 @@ with open('c://python27/tree/EttonProducts/offline/dma.data') as dma:  # 210 pol
         icoords = imap(lambda x: x.split(), coords.split(','))
         l.extend(coord_processing(pol_id, icoords))
 
-        # for c in l:
-        #     print c
-        # break
-
         if len(l) > 1000:
             print len(l)
 
-            l.sort(key=lambda el: (el[0], el[1]))
+            l.sort(key=lambda el: el[0])
 
             with open(new_file_dir.format('file{0}'.format(j)), 'w') as f:
                 for li in l:
