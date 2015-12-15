@@ -1,5 +1,7 @@
 # coding: utf-8
 
+import os
+
 from itertools import imap
 
 
@@ -79,9 +81,11 @@ def coord_processing(pol_id, icoords):
     return to_return
 
 
-new_file_dir = 'c://python27/tree/EttonProducts/offline/Files/{0}'
+# new_file_dir = 'c://python27/tree/EttonProducts/offline/Files/{0}'
+files_dir = '/home/damir/Projects/EttonProducts/offline/Files/{0}'
 
-with open('c://python27/tree/EttonProducts/offline/dma.data') as dma:  # 210 polygons, 9797 coordinates
+# with open('c://python27/tree/EttonProducts/offline/dma.data') as dma:  # 210 polygons, 9797 coordinates
+with open('/home/damir/Projects/EttonProducts/offline/dma.data') as dma:  # 210 polygons, 9797 coordinates
     j = 0
     l = []
     for line in dma:
@@ -94,7 +98,7 @@ with open('c://python27/tree/EttonProducts/offline/dma.data') as dma:  # 210 pol
 
             l.sort(key=lambda el: el[0])
 
-            with open(new_file_dir.format('file{0}'.format(j)), 'w') as f:
+            with open(files_dir.format('file{0}'.format(j)), 'w') as f:
                 for li in l:
                     f.write(' '.join(imap(str, li))+'\n')
 
@@ -104,11 +108,8 @@ with open('c://python27/tree/EttonProducts/offline/dma.data') as dma:  # 210 pol
         # if j == 1:
         #     break
 
-import os
 
-files_dir = 'c://python27/tree/EttonProducts/offline/Files/{0}'
 files_ = next(os.walk(files_dir.format('')))[2]
-print files_
 
 
 def get_file_next_line(filename):
