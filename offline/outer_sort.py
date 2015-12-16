@@ -46,18 +46,14 @@ def coord_processing(pol_id, icoords):
         cut_x2, prec_x2 = float(x2[:cut_ind_x2]), x2[cut_ind_x2:]
 
         if cut_x1 < cut_x2:
-            # li = [
-            #     cut_x1, prec_x1, cut_y1, prec_y1,
-            #     cut_x2, prec_x2, cut_y2, prec_y2,
-            # ]
-            li = [float(x1), prec_x1, y1, x2, y2, ]
+            li = [float(x1), prec_x1, x1, y1, x2, y2, ]
         elif cut_x2 < cut_x1:
-            li = [float(x2), prec_x2, y2, x1, y1, ]
+            li = [float(x2), prec_x2, x2, y2, x1, y1, ]
         else:
             if prec_x1 < prec_x2:
-                li = [float(x1), prec_x1, y1, x2, y2, ]
+                li = [float(x1), prec_x1, x1, y1, x2, y2, ]
             elif prec_x2 < prec_x1:
-                li = [float(x2), prec_x2, y2, x1, y1, ]
+                li = [float(x2), prec_x2, x2, y2, x1, y1, ]
             else:
                 print 'Warning, pol_id={0} has vertical line, what to do???'.format(pol_id)
                 print 'x1: ', x1, 'y1: ', y1, 'x2: ', x2, 'y2: ', y2
@@ -121,6 +117,10 @@ def get_file_next_line(filename):
     except StopIteration:
         f_line = None
     return f_line
+
+
+def get_str(lil):
+    return ' '.join(lil) + '\n'
 
 
 def merge(files):
