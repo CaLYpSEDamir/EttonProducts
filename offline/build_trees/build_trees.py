@@ -1,6 +1,13 @@
 # coding: utf-8
 
+from copy import deepcopy
+from operator import itemgetter
+
+from avl_tree import AVLTree
+
+
 ALL_XS = list()
+
 
 # main_file = 'c://python27/tree/EttonProducts/offline/Files/merged'
 # main_file = '/home/damir/Projects/EttonProducts/offline/Files/merged'
@@ -17,72 +24,101 @@ def get_dict(info):
         "x2": info[x2i],
         "y2": info[y2i],
         "pol_id": info[poli],
-        "a": info[ai],
-        "b": info[bi],
+        "a": float(info[ai]),
+        "b": float(info[bi]),
     }
 
 
-LISTS = []
+def calc_Y(x, a, b):
+    # x = float(x)
+    # a = float(a)
+    # b = float(b)
+    return a*x+b
+
+
+# списки на удаление, элемент состоит из val и y2
+# будем группировать по y2
+to_delete = []
+
+
+def process_tree_nodes(nodes, x_middle, n_x):
+    """
+        Определяем val ноды, определяем ноды на удаление,
+        сортируем по val
+    """
+    # обнуляем список на удаление
+    global to_delete
+    to_delete = []
+    # если х2 совпадает с n_x, то на удаление
+    for n in nodes:
+        n['val'] = calc_Y(x_middle, n['a'], n['b'])
+
+        if n['x2'] == n_x:
+            to_delete.append({
+                'val': n['val'], 'y2': n['y2'], 'pol_id': n['pol_id'], })
+
+    return sorted(nodes, key=itemgetter('val'))
+
 
 with open(main_file) as f:
 
-    def process_tree(prev_info):
+    def process_tree(prev_info, build_first):
 
-        for_tree = list()
-        for_tree.append(get_dict(prev_info))
+        for_tree_build = list()
+        for_tree_build.append(get_dict(prev_info))
 
-        prev_x1 = prev_info[0]
+        prev_x1 = float(prev_info[0])
         ALL_XS.append([prev_x1, None])
 
         next_info = f.readline().split()
 
-        # print next_info
-
         if next_info:
-            next_x1 = next_info[0]
+            next_x1 = float(next_info[0])
 
             while prev_x1 == next_x1:
-                for_tree.append(get_dict(next_info))
+                for_tree_build.append(get_dict(next_info))
 
                 next_info = f.readline().split()
-                next_x1 = next_info[0]
+                next_x1 = float(next_info[0])
 
-            LISTS.append(for_tree)
+            # середина между x(i) и x(i+1) для нахождений val-ов
+            x_middle = (next_x1+prev_x1)/2
+
+            # обрабатываем ноды будущего дерева
+            to_add = process_tree_nodes(for_tree_build, x_middle, next_x1)
+
+            if build_first:
+                tree = AVLTree()
+                print to_add
+                print to_delete
+                for n in to_add:
+                    tree.add(tree.root, n['val'], n['a'], n['b'], n['pol_id'])
+                tree.show()
+                ref_to_tree = tree
+            else:
+                prev_tree = ALL_XS[-2][1]
+                next_tree = deepcopy(prev_tree)
+
+                print to_add
+                print to_delete
+
+                ref_to_tree = next_tree
+                # next_tree.show()
+
+            ALL_XS[-1][1] = ref_to_tree
 
             return next_info
 
-        # добавляем последнюю строку
-        LISTS.append(for_tree)
+        # TODO обработать последнюю строку(последний x)
 
         return None
 
 
     prev_info = f.readline().split()
-    next_info = process_tree(prev_info)
-
-    i = 0
+    next_info = process_tree(prev_info, True)
 
     while next_info:
-        # print next_info
-        next_info = process_tree(next_info)
-
-for l in LISTS:
-    print l
-
-    # if not ALL_XS:
-    #     prev_tree = None
-    # else:
-    #     prev_tree = ALL_XS[-1][1]
+        next_info = process_tree(next_info, False)
 
 
-
-
-    #
-    # for line in f:
-    #     i += 1
-    #
-    #
-    #     print line
-    #     break
-
-
+print ALL_XS
