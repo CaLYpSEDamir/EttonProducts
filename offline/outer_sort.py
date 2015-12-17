@@ -1,7 +1,7 @@
 # coding: utf-8
 
 import os
-
+import platform
 from itertools import imap
 
 
@@ -76,12 +76,14 @@ def coord_processing(pol_id, icoords):
             next = None
     return to_return
 
+if platform.system() == 'Windows':
+    files_dir = 'c://python27/tree/EttonProducts/offline/Files/{0}'
+    dma_file = 'c://python27/tree/EttonProducts/offline/dma.data'
+else:
+    files_dir = '/home/damir/Projects/EttonProducts/offline/Files/{0}'
+    dma_file = '/home/damir/Projects/EttonProducts/offline/dma.data'
 
-# new_file_dir = 'c://python27/tree/EttonProducts/offline/Files/{0}'
-files_dir = '/home/damir/Projects/EttonProducts/offline/Files/{0}'
-
-# with open('c://python27/tree/EttonProducts/offline/dma.data') as dma:  # 210 polygons, 9797 coordinates
-with open('/home/damir/Projects/EttonProducts/offline/dma.data') as dma:  # 210 polygons, 9797 coordinates
+with open(dma_file) as dma:  # 210 polygons, 9797 coordinates
     j = 0
     l = []
     for line in dma:

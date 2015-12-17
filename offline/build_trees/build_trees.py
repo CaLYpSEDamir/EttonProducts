@@ -1,5 +1,6 @@
 # coding: utf-8
 
+import platform
 from copy import deepcopy
 from operator import itemgetter
 
@@ -8,11 +9,10 @@ from avl_tree import AVLTree
 
 ALL_XS = list()
 
-
-# main_file = 'c://python27/tree/EttonProducts/offline/Files/merged'
-# main_file = '/home/damir/Projects/EttonProducts/offline/Files/merged'
-main_file = '/home/damir/Projects/EttonProducts/offline/Files/cut'
-
+if platform.system() == 'Windows':
+    main_file = 'c://python27/tree/EttonProducts/offline/Files/cut'
+else:
+    main_file = '/home/damir/Projects/EttonProducts/offline/Files/cut'
 
 float_x1i, x1_preci, x1i, y1i, x2i, y2i, poli, ai, bi = range(9)
 
@@ -144,5 +144,5 @@ with open(main_file) as f:
     while next_info:
         next_info = process_tree(next_info, False)
 
-
 print ALL_XS
+
