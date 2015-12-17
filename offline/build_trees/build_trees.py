@@ -54,8 +54,9 @@ def process_tree_nodes(nodes, x_middle, n_x):
         n['val'] = calc_Y(x_middle, n['a'], n['b'])
 
         if n['x2'] == n_x:
-            to_delete.append({
-                'val': n['val'], 'y2': n['y2'], 'pol_id': n['pol_id'], })
+            # to_delete.append({
+            #     'val': n['val'], 'y2': n['y2'], 'pol_id': n['pol_id'], })
+            to_delete.append(n)
 
     return sorted(nodes, key=itemgetter('val'))
 
@@ -67,49 +68,72 @@ with open(main_file) as f:
         for_tree_build = list()
         for_tree_build.append(get_dict(prev_info))
 
-        prev_x1 = float(prev_info[0])
+        prev_x1 = float(prev_info[x1i])
         ALL_XS.append([prev_x1, None])
 
         next_info = f.readline().split()
 
         if next_info:
-            next_x1 = float(next_info[0])
+            next_x1 = float(next_info[x1i])
 
             while prev_x1 == next_x1:
                 for_tree_build.append(get_dict(next_info))
 
                 next_info = f.readline().split()
-                next_x1 = float(next_info[0])
+                next_x1 = float(next_info[x1i])
 
             # середина между x(i) и x(i+1) для нахождений val-ов
             x_middle = (next_x1+prev_x1)/2
 
+            prev_to_delete = to_delete
+
             # обрабатываем ноды будущего дерева
-            to_add = process_tree_nodes(for_tree_build, x_middle, next_x1)
+            to_add = process_tree_nodes(for_tree_build, x_middle, next_info[x1i])
+
+            print '-'*80
+            print to_add
+            print prev_to_delete
 
             if build_first:
                 tree = AVLTree()
-                print to_add
-                print to_delete
                 for n in to_add:
                     tree.add(tree.root, n['val'], n['a'], n['b'], n['pol_id'])
                 tree.show()
                 ref_to_tree = tree
             else:
-                prev_tree = ALL_XS[-2][1]
-                next_tree = deepcopy(prev_tree)
+                # если кривые координаты, идут вразброс с дырами,
+                # то строим новое дерево
+                #  __           __
+                # /  \ пустота /  \
+                # \__/         \__/
 
-                print to_add
-                print to_delete
+                if not prev_to_delete:
+                    print 'Hole'
+                    tree = AVLTree()
+                    for n in to_add:
+                        tree.add(tree.root, n['val'], n['a'], n['b'], n['pol_id'])
 
-                ref_to_tree = next_tree
-                # next_tree.show()
+                    tree.show()
+                    ref_to_tree = tree
+                else:
+                    prev_tree = ALL_XS[-2][1]
+                    next_tree = deepcopy(prev_tree)
+
+                    # пока грубое добавление/удаление
+                    for n in to_add:
+                        next_tree.add(next_tree.root, n['val'], n['a'], n['b'], n['pol_id'])
+                    for n in prev_to_delete:
+                        next_tree.delete(n['val'])
+
+                    ref_to_tree = next_tree
+                    next_tree.show()
 
             ALL_XS[-1][1] = ref_to_tree
 
             return next_info
 
-        # TODO обработать последнюю строку(последний x)
+        # TODO обработать последнюю строку(последний x),
+        # TODO а то теряется последнее дерево
 
         return None
 
