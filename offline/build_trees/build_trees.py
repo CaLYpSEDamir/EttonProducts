@@ -10,9 +10,9 @@ from avl_tree import AVLTree
 ALL_XS = list()
 
 if platform.system() == 'Windows':
-    main_file = 'c://python27/tree/EttonProducts/offline/Files/cut'
+    main_file = 'c://python27/tree/EttonProducts/offline/cut'
 else:
-    main_file = '/home/damir/Projects/EttonProducts/offline/Files/cut'
+    main_file = '/home/damir/Projects/EttonProducts/offline/cut'
 
 float_x1i, x1_preci, x1i, y1i, x2i, y2i, poli, ai, bi = range(9)
 
